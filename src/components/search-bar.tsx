@@ -4,24 +4,29 @@ import { useState } from "react"
 import { Search } from 'lucide-react'
 import { Input } from "./ui/input"
 import { Button } from "./ui/button"
-import { Tool } from "@/types/tool"
-import { ToolCard } from "./tool-card"
-import { mockTools } from "@/data/mock-tools"
 
 export function SearchBar() {
   const [query, setQuery] = useState("")
-  const [results, setResults] = useState<Tool[]>([])
+  const [aiResponse, setAiResponse] = useState("")
 
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!query.trim()) return
 
-    // Simple search in mock data
-    const searchResults = mockTools.filter(tool => 
-      tool.name.toLowerCase().includes(query.toLowerCase()) ||
-      tool.description.toLowerCase().includes(query.toLowerCase())
-    )
-    setResults(searchResults)
+    try {
+      const response = await fetch('/api/groq', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query }),
+      });
+      
+      const data = await response.json();
+      setAiResponse(data);
+    } catch (error) {
+      console.error("Error processing search:", error)
+    }
   }
 
   return (
@@ -45,11 +50,9 @@ export function SearchBar() {
         </Button>
       </form>
 
-      {results.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {results.map(tool => (
-            <ToolCard key={tool.id} tool={tool} />
-          ))}
+      {aiResponse && (
+        <div className="mb-8 p-4 bg-black bg-opacity-30 rounded-lg">
+          <pre className="whitespace-pre-wrap">{aiResponse}</pre>
         </div>
       )}
     </div>
