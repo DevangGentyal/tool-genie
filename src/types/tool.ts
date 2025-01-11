@@ -2,14 +2,12 @@ export interface Tool {
   id: number
   name: string
   description: string
-  features: string[]
-  pricing: "Free" | "Freemium" | "Paid" | "Unknown"
-  icon: string
+  pricing: "Free" | "Freemium" | "Paid"
   category: string
-  tags?: string[]
-  rating?: number
-  onViewDetails?: () => void
-  className?: string
+  features: string[]
+  icon: string
+  platform: string
+  target_audience: string
 }
 
 export interface SearchFilters {
