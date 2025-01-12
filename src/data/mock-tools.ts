@@ -10,7 +10,8 @@ export const mockTools: Tool[] = [
     features: ["Grammar correction", "Style suggestions", "Plagiarism check"],
     icon: "/demo.png",
     platform: "Web, iOS, Android",
-    target_audience: "Writers, Students, Content Creators, Professionals"
+    target_audience: "Writers, Students, Content Creators, Professionals",
+    keywords: ["AIWriter", "ContentGenerator", "WritingAssistant", "GrammarChecker", "ContentCreation"]
   },
   {
     id: 2,
@@ -21,7 +22,8 @@ export const mockTools: Tool[] = [
     icon: "/demo.png",
     category: "Video",
     platform: "Web, iOS",
-    target_audience: "Video Creators, Marketing Teams, Social Media Managers"
+    target_audience: "Video Creators, Marketing Teams, Social Media Managers",
+    keywords: ["VideoAI", "VideoGenerator", "ContentCreator", "VideoEditor", "AIVideo"]
   },
   {
     id: 3,
@@ -32,7 +34,8 @@ export const mockTools: Tool[] = [
     icon: "/demo.png",
     category: "Image",
     platform: "Web",
-    target_audience: "Designers, Artists, Content Creators, Marketing Teams"
+    target_audience: "Designers, Artists, Content Creators, Marketing Teams",
+    keywords: ["TextToImage", "ImageGenerator", "ImageGen", "ArtGenerator", "AIImageGenerator"]
   },
   {
     id: 4,
@@ -43,7 +46,8 @@ export const mockTools: Tool[] = [
     icon: "/demo.png",
     category: "Voice",
     platform: "Web, Android",
-    target_audience: "Voice Artists, Content Creators, Podcasters, Musicians"
+    target_audience: "Voice Artists, Content Creators, Podcasters, Musicians",
+    keywords: ["VoiceAI", "TextToSpeech", "VoiceCloning", "AudioGenerator", "VoiceSynthesis"]
   },
   // Add more mock tools...
 ] as const 

@@ -8,6 +8,7 @@ export interface Tool {
   icon: string
   platform: string
   target_audience: string
+  keywords: string[]
 }
 
 export interface SearchFilters {

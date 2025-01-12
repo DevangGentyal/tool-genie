@@ -23,7 +23,6 @@ export async function POST(req: Request) {
                         {
                             "app_query_analysis": {
                             "user_query": "i want an app for creating images using AI",
-                            "keywords": ["TextToImage", "ImageGenerator", "ImageGen", "ArtGenerator", "AIImageGenerator"],
                             "attributes": {
                                 "name": "exact name of the app if user mentioned in the user query else None",
                                 "description": "Description about the app user mentioned in the user query",
@@ -32,6 +31,7 @@ export async function POST(req: Request) {
                                 "category": "Text-to-Image",
                                 "features": ["Image Generation", "Art Generation", "Text to Image"],
                                 "target_audience": "Students, Professionals, Content Creators, Editors"
+                                "keywords": ["TextToImage", "ImageGenerator", "ImageGen", "ArtGenerator", "AIImageGenerator"],
                             },
                             "optimized_search_request": "this will be a prompt which you will generate. which will act as a search query in google for getting the exact tools required by user. Optimized"
                             }
@@ -46,6 +46,7 @@ export async function POST(req: Request) {
             model: "llama-3.1-8b-instant",
         });
 
+        console.log(completion.choices[0]?.message?.content || "");
         return NextResponse.json(completion.choices[0]?.message?.content || "");
     } catch (error) {
         return NextResponse.json({ error: "Failed to process query" }, { status: 500 });
