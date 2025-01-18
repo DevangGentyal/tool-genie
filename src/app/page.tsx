@@ -7,9 +7,9 @@ import { Newsletter } from "../components/newsletter"
 export default function Home() {
   return (
     <div className="flex flex-col items-center justify-center w-full px-50 pt-20 pb-12">
-      <section className="text-center py-24 md:py-32">
+      <section className="text-center py-0 md:py-0">
         <h1 className="text-5xl md:text-6xl font-bold mb-6">
-          <span className="text-white  opacity-90">
+          <span className="text-white opacity-90">
             Discover the 
           </span>
           <span className="pl-2 text-transparent bg-clip-text bg-gradient-to-r from-pink-300 to-purple-500">

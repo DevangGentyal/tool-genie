@@ -9,6 +9,7 @@ export interface Tool {
   platform: string
   target_audience: string
   keywords: string[]
+  onViewDetails?: () => void
 }
 
 export interface SearchFilters {

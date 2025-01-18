@@ -24,8 +24,8 @@ export async function POST(req: Request) {
                             "app_query_analysis": {
                             "user_query": "i want an app for creating images using AI",
                             "attributes": {
-                                "name": "exact name of the app if user mentioned in the user query else None",
-                                "description": "Description about the app user mentioned in the user query",
+                                "name": "Name of the app else null",
+                                "description": "Description about the app if mentioned else null ex. (chat gpt, ideogram, sora, etc.)",
                                 "pricing": "Freemium",
                                 "platform": "Web, iOS, Android",
                                 "category": "Text-to-Image",
@@ -33,7 +33,7 @@ export async function POST(req: Request) {
                                 "target_audience": "Students, Professionals, Content Creators, Editors"
                                 "keywords": ["TextToImage", "ImageGenerator", "ImageGen", "ArtGenerator", "AIImageGenerator"],
                             },
-                            "optimized_search_request": "this will be a prompt which you will generate. which will act as a search query in google for getting the exact tools required by user. Optimized"
+                            "optimized_search_request": "this will be a prompt which you will generate. which will act as a search query in for getting the exact tools required by user. Optimized with keywords for finding the desired apps"
                             }
                         }
                     `,
@@ -46,7 +46,7 @@ export async function POST(req: Request) {
             model: "llama-3.1-8b-instant",
         });
 
-        console.log(completion.choices[0]?.message?.content || "");
+        // console.log("NLP Response: "+completion.choices[0]?.message?.content || "");
         return NextResponse.json(completion.choices[0]?.message?.content || "");
     } catch (error) {
         return NextResponse.json({ error: "Failed to process query" }, { status: 500 });

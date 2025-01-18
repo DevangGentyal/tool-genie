@@ -6,6 +6,7 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Check, ExternalLink, Heart } from 'lucide-react'
 import { useState } from "react"
 import { Tool } from "@/types/tool"
+import Link from 'next/link'
 
 interface ToolCardProps {
   tool: Tool
@@ -16,14 +17,14 @@ export function ToolCard({ tool, className = "" }: ToolCardProps) {
   const [isLiked, setIsLiked] = useState(false)
 
   return (
-    <Card className={`w-full max-w-md bg-black bg-opacity-30 text-white border-purple-500 border-opacity-20 p-4 ${className}`}>
+    <Link href={`/tool-detail/${tool.id}`} className={`w-full max-w-md bg-black bg-opacity-30 text-white border-purple-500 border-opacity-20 p-4 ${className}`}>
       <CardHeader className="space-y-4">
         <div className="flex flex-col sm:flex-row items-start gap-3">
           <div className="space-y-1 w-full sm:basis-1/4 sm:flex-shrink-0">
             <img
               src={tool.icon}
               alt={tool.name}
-              className="w-fill h-fill  rounded"
+              className="w-fill h-fill rounded"
             />
           </div>
           <div className="flex flex-col space-y-1 w-full sm:basis-3/4 ">
@@ -52,20 +53,26 @@ export function ToolCard({ tool, className = "" }: ToolCardProps) {
           variant="ghost"
           size="icon"
           className="text-gray-400 hover:text-purple-400 hover:bg-purple-500/10"
-          onClick={() => setIsLiked(!isLiked)}
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsLiked(!isLiked);
+          }}
         >
           <Heart className={`w-5 h-5 ${isLiked ? "fill-purple-500 text-purple-500" : ""}`} />
         </Button>
         <Button
           variant="ghost"
           className="text-white hover:bg-purple-500/10 hover:text-purple-400 flex items-center"
-          onClick={tool.onViewDetails}
+          onClick={(e) => {
+            e.stopPropagation();
+            tool.onViewDetails && tool.onViewDetails();
+          }}
         >
           <span className="sr-only sm:not-sr-only text-sm">View Details</span>
           <ExternalLink className="w-4 h-4 sm:ml-3" />
         </Button>
       </CardFooter>
-    </Card>
+    </Link>
   )
 }
 

@@ -21,13 +21,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${geistSans.className} ${geistMono.variable}`}>
       <body className="bg-gradient-to-br from-gray-900 to-black text-white min-h-screen flex flex-col">
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           <div className="flex-grow flex flex-col">
             <MainNav />
             <main className="flex w-full flex-col items-center justify-center">{children}</main>
             <Footer />
           </div>
-        </ThemeProvider>
       </body>
     </html>
   );
