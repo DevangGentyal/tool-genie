@@ -40,6 +40,7 @@ export function SearchBar() {
   const [temp, setTemp] = useState("");
 
   const queryProcessor = async () => {
+    // Processing User query using NLP (groq)
     let processedQuery;
     try {
       const response = await fetch("/api/groq", {
@@ -47,7 +48,30 @@ export function SearchBar() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ query }),
+        body: JSON.stringify({
+          query, systemMsg: `You are an expert API specializing in analyzing raw natural language search queries for mobile applications. 
+                        Your task is to decode user requests, identify their key attributes, and provide a structured response. 
+                        The response should include a field called "optimized_search_request," which contains a professionally crafted 
+                        Google search query designed to yield optimal results for matching apps. 
+                        Note that while user refers for app they may be requesting for webapps 90% of the time. Also I want the response only as acceptable JSON object no other text like header or footer.
+                        Your output should follow the JSON schema below: 
+                        {
+                            "app_query_analysis": {
+                            "user_query": "i want an app for creating images using AI",
+                            "attributes": {
+                                "name": "Name of the app else null",
+                                "description": "Description about the app if mentioned else null ex. (chat gpt, ideogram, sora, etc.)",
+                                "pricing": "Freemium",
+                                "platform": "Web, iOS, Android",
+                                "category": "Text-to-Image",
+                                "features": ["Image Generation", "Art Generation", "Text to Image"],
+                                "target_audience": "Students, Professionals, Content Creators, Editors"
+                                "keywords": ["TextToImage", "ImageGenerator", "ImageGen", "ArtGenerator", "AIImageGenerator"],
+                            },
+                            "optimized_search_request": "this will be a prompt which you will generate. which will act as a search query in for getting the exact tools required by user. Optimized with keywords for finding the desired apps"
+                            }
+                        }`
+        }),
       });
 
       const data = await response.json();
@@ -131,10 +155,50 @@ export function SearchBar() {
     return responseData;
   };
 
-  const webCrawler = async (webreuslts: JSON) => {
-    return 4 / 0;
-    if (!webreuslts) return;
+  const webCrawler = async (webreuslts: { results: { title: string; snippet: string; link: string }[] }) => {
+    if (!webreuslts || !webreuslts.results || webreuslts.results.length === 0) {
+      console.error("No web results provided to the crawler.");
+      return;
+    }
+    // Serialize web results to a JSON string
+    const webResultsString = JSON.stringify(webreuslts.results);
+
+    // Give the results for NLP (groq)
+    try {
+      const response = await fetch("/api/groq", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          query: webResultsString, // Send the JSON array directly
+          systemMsg: `Okay, I have sent you a list of Web Search Results for a particular app. I want you to go through the Title, Snippet, and Link and classify each website based on these 3 types:
+          Category 1: Pages listing multiple apps (e.g., "Top 10 apps for video generation").
+          Category 2: Pages with a single app’s detailed information.
+          Category 3: General articles or blogs with some references to apps.
+          ------
+          I want you to give me the response in the same format I provide you as a query, but additionally add a field as category and add the number of the category that website belongs to.`,
+        }),
+      });
+
+      const data = await response.json();
+      console.log("NLP Processed Data:", data);
+
+      // Further logic to process data...
+    } catch (error) {
+      console.error("Error in sending data to /api/groq:", error);
+    }
+
+    // Scrape the data from Type 1 Websites (Exact Website)
+    // Implement scraping logic for Type 1...
+
+    // Recursively Scrape the data from Type 2 Websites (Redirective Website)
+    // Implement scraping logic for Type 2...
+
+    // Intelligently Scrape the data from Type 3 Websites (Mixed Content Website)
+    // Implement scraping logic for Type 3...
   };
+
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!query.trim()) return;
@@ -157,12 +221,23 @@ export function SearchBar() {
           setMatchedTools(matches);
           setSearched(true);
         } else {
-          // Go For WebSearch
-          let webSearchResults = await webSearcher(parsedResponse);
-          setTemp(webSearchResults.results[0].title);
-          
-          // Crawl the WebSearchResults
-          webCrawler(webSearchResults);
+          try {
+            // Perform a web search and get results
+            let webSearchResults = await webSearcher(parsedResponse);
+
+            // Ensure there are results before accessing them
+            if (webSearchResults?.results?.length > 0) {
+              setTemp(webSearchResults.results[0].title); // Set the first result's title
+            } else {
+              console.error("No results found in web search.");
+              return; // Exit early if no results
+            }
+
+            // Pass the search results to the webCrawler function
+            webCrawler(webSearchResults);
+          } catch (error) {
+            console.error("An error occurred:", error);
+          }
 
           setMatchedTools(matches);
           setSearched(true);
@@ -191,9 +266,8 @@ export function SearchBar() {
         </div>
         <Button
           type="submit"
-          className={`bg-purple-500 rounded-r-full px-8 ${
-            loading ? "opacity-50 cursor-not-allowed" : ""
-          }`}
+          className={`bg-purple-500 rounded-r-full px-8 ${loading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
           disabled={loading}
         >
           {loading ? "Searching..." : "Search"}
